@@ -39,4 +39,14 @@ getSystemVersion
 pingDocker
 
 ```
-Once you create new instance of the DockerManager class, you can create other instances of other objects in this connector by simply calling getContainerManager to create an instance of ContainerManager, or by calling getImageManager to create an instance of ImageManager, or by calling getVolumeManager to create an instance of VolumeManager.
+Once you create new instance of the DockerManager class, you can create other instances of other objects in this connector by simply calling ```getContainerManager()``` to create an instance of ContainerManager, or by calling ```getImageManager()``` to create an instance of ImageManager, or by calling ```getVolumeManager()``` to create an instance of VolumeManager.
+```
+var config = require("Modules/Docker/test/dockerEngine/testConfig");
+var dockerManager = require("Modules/Docker/DockerManager");
+//create instance of DockerManager.
+var myDockerManager = new dockerManager.DockerManager(config);
+//create instance of image, container, and volume managers from the instance of DockerManager.
+var cm = myDockerManager.getContainerManager();
+var IM = myDockerManager.getImageManager();
+var VM = myDockerManager.getVolumeManager();
+```
