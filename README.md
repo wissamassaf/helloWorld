@@ -49,4 +49,17 @@ var myDockerManager = new dockerManager.DockerManager(config);
 var cm = myDockerManager.getContainerManager();
 var IM = myDockerManager.getImageManager();
 var VM = myDockerManager.getVolumeManager();
+
+var createVolumeParams ={
+  "Size":500,
+  "VolumeType":"gp2"
+}
+vm.createVolume(createVolumeParams,[{"Key":"Name","Value":"batata"}],{"text":"test"});
+vm.deleteVolume({"VolumeId":"vol-0ee3787787bd61b98"},{"text":"test"});
+var attachVolumeParams={
+  "VolumeId":"vol-07ba3c44cc9daceee",
+  "InstanceId":"i-0e0096b47bbb17b38",
+  "Device":"/dev/xvdh"
+}
+vm.attachVolume(attachVolumeParams);
 ```
