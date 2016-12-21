@@ -41,26 +41,34 @@ pingDocker
 ```
 Once you create new instance of the DockerManager class, you can create other instances of other objects in this connector by simply calling ```getContainerManager()``` to create an instance of ContainerManager, or by calling ```getImageManager()``` to create an instance of ImageManager, or by calling ```getVolumeManager()``` to create an instance of VolumeManager.
 ```
-var config = require("Modules/Docker/test/dockerEngine/testConfig");
-var dockerManager = require("Modules/Docker/DockerManager");
-//create instance of DockerManager.
+var config = require(CONFIG_PATH);
+var dockerManager = require(DockerManager_PATH);
 var myDockerManager = new dockerManager.DockerManager(config);
-//create instance of image, container, and volume managers from the instance of DockerManager.
+var im = myDockerManager.getImageManager();
 var cm = myDockerManager.getContainerManager();
-var IM = myDockerManager.getImageManager();
-var VM = myDockerManager.getVolumeManager();
-
-var createVolumeParams ={
-  "Size":500,
-  "VolumeType":"gp2"
+var vm = myDockerManager.getVolumeManager();
+//1: pull an image from docker registry.
+var createImageParams = {
+  "fromImage":"hello-world"//"IMAGE_TO_PULL"
 }
-vm.createVolume(createVolumeParams,[{"Key":"Name","Value":"batata"}],{"text":"test"});
-
-var attachVolumeParams={
-  "VolumeId":"vol-07ba3c44cc9daceee",
-  "InstanceId":"i-0e0096b47bbb17b38",
-  "Device":"/dev/xvdh"
+return im.createImage(createImageParams);
+//2: create a container from the pulled image.
+var createContainerName = "TEST_CONTAINER";
+var createContainerParams = {
+  "Image":"hello-world"//"PULLED_IMAGE"
 }
-vm.attachVolume(attachVolumeParams);
-vm.deleteVolume({"VolumeId":"vol-0ee3787787bd61b98"},{"text":"test"});
+var createContainer = cm.createContainer(createContainerName,createContainerParams);
+return createContainer;
+//3:start the created container.
+return cm.startContainer(createContainerName);
+//4:get the created container's logs
+return cm.getContainerLogs(createContainerName,{"stderr":1,"stdout":1});
+//5: stop the container created previously.
+return cm.stopContainer(createContainerName);
+//6: remove the created container.
+return cm.removeContainer(createContainerName);
+//7: list Volumes.
+return vm.listVolumes();
+//8: removeImage
+return im.removeImage("hello-world");
 ```
